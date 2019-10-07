@@ -1,5 +1,74 @@
-<p>This is the partial for view 2.</p>
-<p>
-  Showing of 'interpolate' filter:
-  {{ 'Current version is v%VERSION%.' | interpolate }}
-</p>
+<p>Formulario Nº2</p>
+ 
+<form name="registropagoForm" novalidate ng-submit="submitForm2(registropagoForm)">
+  <div>
+    <span>Registro Pago</span>
+  </div>
+  <div>
+    <p>
+      <span>Monto a pagar</span>
+      <input type="text" value="$50.000" disabled>
+    </p>
+
+    <p>
+      <span>Tipo de Pago</span>
+      <select name="paymentType" id="paymentType" ng-model="data.paymentType" required ng-options="opcion.id as opcion.text for opcion in opciones">
+        <option value="">-- Seleccione Opción --</option>
+      </select>
+
+      <div ng-messages="registropagoForm.paymentType.$error" ng-if="data.send">
+        <ng-message when="required">Debe seleccionar un tipo de pago</ng-message>
+      </div>
+    </p>
+
+    <p ng-show="data.paymentType === 'D' || data.paymentType === 'C'">
+      <span>Últimos dígitos tarjeta</span>
+      <input type="text" name="carNumber" ng-model="data.carNumber" placeholder="(4. últimos dígitos)"
+      maxlength="4"
+      ng-required="data.paymentType === 'D' || data.paymentType === 'C'"
+      ng-pattern="/^([0-9]*)?$/">
+      <div ng-messages="registropagoForm.carNumber.$error" ng-if="data.send">
+        <ng-message when="maxlength">Debe tener un largo de 4 dígitos</ng-message>
+        <ng-message when="required">Debe ingresar un número de tarjeta</ng-message>
+        <ng-message when="pattern">Solo se admiten números</ng-message>
+      </div>
+    </p>
+
+    <p ng-show="data.paymentType === 'D' || data.paymentType === 'C'">
+      <span>Codigo de Autorización</span>
+      <input type="text" name="nro_autorizacion" ng-model="data.nro_autorizacion"
+      maxlength="8"
+      ng-pattern="/^([0-9]*)?$/"
+      ng-required="data.paymentType === 'D' || data.paymentType === 'C'">
+    </p>
+
+    <p ng-show="data.paymentType === 'D' || data.paymentType === 'C'">
+      <span>Número operación</span>
+      <input type="text" name="nro_comprobante" ng-model="data.nro_comprobante"
+      maxlength="8"
+      ng-pattern="/^([0-9]*)?$/"
+      ng-required="data.paymentType === 'D' || data.paymentType === 'C'">
+    </p>
+
+    <p>
+      <span>E-mail</span>
+      <input type="text" name="email" ng-model="data.email" placeholder="Correo elecxtronico"
+      ng-pattern='/^(?!.*notiene)(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i'
+      minlength="15"
+      required>
+      <div ng-messages="registropagoForm.email.$error" ng-if="data.send">
+        <ng-message when="required">Debe ingresar un E-mail</ng-message>
+        <ng-message when="pattern">E-mail está con un formato inválido</ng-message>
+        <ng-message when="minlength">E-mail es demasiado corto</ng-message>
+      </div>
+    </p>
+  </div>
+  <input type="submit" value="Enviar">
+</form>
+
+
+<pre>{{registropagoForm.paymentType.$error | json}}</pre>
+<pre>{{registropagoForm.carNumber.$error | json}}</pre>
+<pre>{{registropagoForm.email.$error | json}}</pre>
+
+<div ng-if="registroPagoOK">El formulario se envió correctamente</div>
